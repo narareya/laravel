@@ -18,7 +18,7 @@
                 <td>{{ $student['name'] }}</td>
                 <td>{{ $student['birthday'] }}</td>
                 <td>{{ $student['gender'] }}</td>
-                <td>{{ $student['grade'] }}</td>
+                <td>{{ $student->classroom->name }}</td>
                 <td>{{ $student['email'] }}</td>
                 <td>{{ $student['address'] }}</td>
             </tr>

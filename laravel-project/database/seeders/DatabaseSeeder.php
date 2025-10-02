@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
 
-        Student::factory(15)->create();
-
         Guardian::factory(15)->create();
 
-        Classroom::factory(10)->create();
+        Classroom::factory(4)
+        ->hasStudents(5)
+        ->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
