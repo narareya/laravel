@@ -9,8 +9,8 @@
             <div class="ml-10 flex items-baseline space-x-4">
               <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
                 <x-navlink 
-                    href="{{ route('student') }}"
-                    :active="request()->is('student')">
+                    href="{{ route('home') }}"
+                    :active="request()->is('home')">
                 Home
                 </x-navlink>
 
@@ -27,10 +27,28 @@
                 </x-navlink>   
 
                 <x-navlink
+                    href="{{ route('student') }}"
+                    :active="request()->is('student')">
+                Student
+                </x-navlink>   
+
+                <x-navlink
                     href="{{ route('guardian') }}"
                     :active="request()->is('guardian')">
                 Guardian
                 </x-navlink>   
+
+                <x-navlink
+                    href="{{ route('subject') }}"
+                    :active="request()->is('subject')">
+                Subject
+                </x-navlink> 
+
+                <x-navlink
+                    href="{{ route('teacher') }}"
+                    :active="request()->is('teacher')">
+                Teacher
+                </x-navlink> 
             </div>
           </div>
         </div>
@@ -81,8 +99,8 @@
         <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
 
         <x-navlink-mobile
-            href="{{ route('student') }}"
-            :active="request()->routeIs('student')">
+            href="{{ route('home') }}"
+            :active="request()->routeIs('home')">
         Home
         </x-navlink-mobile>
 
@@ -99,9 +117,27 @@
         </x-navlink-mobile>
 
         <x-navlink-mobile
+            href="{{ route('student') }}"
+            :active="request()->routeIs('student')">
+        Student
+        </x-navlink-mobile>
+
+        <x-navlink-mobile
             href="{{ route('guardian') }}"
             :active="request()->routeIs('guardian')">
         Guardian
+        </x-navlink-mobile>
+
+        <x-navlink-mobile
+            href="{{ route('subject') }}"
+            :active="request()->routeIs('subject')">
+        Subject
+        </x-navlink-mobile>
+
+        <x-navlink-mobile
+            href="{{ route('teacher') }}"
+            :active="request()->routeIs('teacher')">
+        Teacher
         </x-navlink-mobile>
       </div>
       <div class="border-t border-white/10 pt-4 pb-3">
