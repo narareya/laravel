@@ -22,14 +22,13 @@ class DatabaseSeeder extends Seeder
 
         Guardian::factory(15)->create();
 
+        Teacher::factory(5)->create();
+
         Classroom::factory(4)
         ->hasStudents(5)
         ->create();
 
-        Teacher::factory(5)->create();
-
         // Subject::factory(5)
-        // ->hasTeachers(5)
         // ->create();
 
         // User::factory()->create([

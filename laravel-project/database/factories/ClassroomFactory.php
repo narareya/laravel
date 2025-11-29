@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Teacher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class ClassroomFactory extends Factory
     {
         return [
             'name' => fake()->unique()->randomElement(['11 PPLG 2', '11 DKV 2', '11 ANIMASI 2', '10 PPLG 2']),
+            'teacher_id' => Teacher::inRandomOrder()->first()->id,
         ];
     }
 }

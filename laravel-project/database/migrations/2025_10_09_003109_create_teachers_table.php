@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('subject_id');
+            $table->foreignId('subject_id')->constrained()->cascadeOnDelete();
             $table->string('phone');
             $table->string('email');
             $table->string('address');
             $table->timestamps();
         });
+        
     }
 
     /**
