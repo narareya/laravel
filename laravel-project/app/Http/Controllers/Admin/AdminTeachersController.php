@@ -9,12 +9,11 @@ use Illuminate\Http\Request;
 
 class AdminTeachersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
-        $teachers = Teacher::paginate(10);
+        //mengambil data teacher serta subject dalam 1 query
+        $teachers = Teacher::with('subject')->paginate(10);
         $subjects = Subject::all();
 
         return view('admin.teachers.index', [
@@ -24,31 +23,33 @@ class AdminTeachersController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        $subjects = Subject::all();
+        // ngambil subject yang belum dimiliki teacher/yang kosong (One-to-One)
+        $subjects = Subject::doesntHave('teacher')->get();
 
+        // tidak ngirim data yg tdk dpkai
         return view('admin.teachers.create', [
+            'title' => 'Create Teacher',
             'subjects' => $subjects,
-            'teachers' => Teacher::paginate(5)
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
+        $messages = [
+            'subject_id.unique' => 'This subject has already been assigned to another teacher. Please select a different subject.',
+        ];
+
         $validated = $request->validate([
             'name'       => 'required|string|max:255',
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,id|unique:teachers,subject_id',
             'email'      => 'required|email|unique:teachers,email',
             'phone'      => 'required|string|max:20',
             'address'    => 'nullable|string',
-        ]);
+        ], $messages);
 
         Teacher::create($validated);
 
@@ -56,26 +57,32 @@ class AdminTeachersController extends Controller
             ->with('success', 'Teacher created successfully!');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
+   
     public function show(string $id)
     {
-        //
+        $teacher = Teacher::with('subject')->findOrFail($id);
+
+        return view('admin.teachers.show', [
+            'title' => 'Teacher Details',
+            'teacher' => $teacher,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(string $id)
     {
-        $teachers = Teacher::findOrFail($id);
-        $subjects = Subject::whereDoesntHave('teacher')
-            ->orWhereHas('teacher', fn($q) => $q->where('id', $teachers->id))
+        $teacher = Teacher::findOrFail($id);
+        
+        // ngambil subject yg blum memilki tecaher
+        $subjects = Subject::doesntHave('teacher')
+            ->orWhere('id', $teacher->subject_id)
             ->get();
 
-        return view('admin.teacher.edit', compact('teachers', 'subjects'));
+        return view('admin.teachers.edit', [
+            'title' => 'Edit Teacher',
+            'teacher' => $teacher,
+            'subjects' => $subjects,
+        ]);
     }
 
     /**
@@ -83,16 +90,21 @@ class AdminTeachersController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Custom validation messages
+        $messages = [
+            'subject_id.unique' => 'This subject has already been assigned to another teacher. Please select a different subject.',
+        ];
+
         $validated = $request->validate([
             'name'       => 'required|string|max:255',
-            'subject_id' => 'required|exists:subjects,id',
+            'subject_id' => 'required|exists:subjects,id|unique:teachers,subject_id,' . $id,
             'email'      => 'required|email|unique:teachers,email,' . $id,
             'phone'      => 'required|string|max:20',
             'address'    => 'nullable|string',
-        ]);
+        ], $messages);
 
-        $teachers = Teacher::findOrFail($id);
-        $teachers->update($validated);
+        $teacher = Teacher::findOrFail($id);
+        $teacher->update($validated);
 
         return redirect()->route('admin.teachers.index')
             ->with('success', 'Teacher updated successfully!');
@@ -106,6 +118,7 @@ class AdminTeachersController extends Controller
         $teacher = Teacher::findOrFail($id);
         $teacher->delete();
 
-        return redirect()->route('admin.teachers.index')->with('success', 'Data berhasil dihapus !');
+        return redirect()->route('admin.teachers.index')
+            ->with('success', 'Teacher deleted successfully!');
     }
 }
